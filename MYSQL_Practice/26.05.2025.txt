@@ -1,0 +1,169 @@
+// input from crud operation file diredctly into DB
+
+package crud_operation;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.Scanner;  // Only added this import
+
+public class CRUD_Operation {
+    public static void main(String[] args) {
+        CRUD_Operation objTest = new CRUD_Operation();
+        Scanner scanner = new Scanner(System.in);
+        String another;
+
+        do {
+            System.out.print("Enter sl_no: ");
+            String sl_no = scanner.nextLine();
+            
+            System.out.print("Enter name: ");
+            String name = scanner.nextLine();
+            
+            System.out.print("Enter mark: ");
+            int mark = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+            
+            objTest.create_data(sl_no, name, mark);
+            
+            System.out.print("Add another? (y/n): ");
+            another = scanner.nextLine();
+        } while (another.equalsIgnoreCase("y"));
+        
+        scanner.close();
+    }
+
+    // Your original create_data method remains exactly the same
+    public void create_data(String sl_no, String name, int mark) {
+        DB_Connection obj_DB_Connection = new DB_Connection();
+        Connection connection = obj_DB_Connection.get_connection();
+        PreparedStatement ps = null;
+        try {
+            String query = "insert into student values (?,?,?)";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, sl_no);
+            ps.setString(2, name);
+            ps.setInt(3, mark);
+            System.out.println(ps);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+
+
+###############################################################
+
+
+package crud_operation;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class CRUD_Operation {
+    public static void main(String[] args) {
+        CRUD_Operation objTest = new CRUD_Operation();
+        objTest.read_data();
+    }
+
+
+    public void read_data() {
+        DB_Connection obj_DB_Connection = new DB_Connection();
+        Connection connection = obj_DB_Connection.get_connection();
+        PreparedStatement ps = null;
+        ResultSet rs=null;
+        try {
+            String query = "select * from student";
+            ps = connection.prepareStatement(query);
+            rs=ps.executeQuery();
+            while(rs.next()){
+            	System.out.println("id"+rs.getInt(1));
+            	System.out.println("id"+rs.getString(2));
+            	System.out.println("id"+rs.getInt(3));
+            	System.out.println("----------------");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+
+#############################################
+
+
+package crud_operation;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.*;
+
+public class CRUD_Operation {
+    public static void main(String[] args) {
+        CRUD_Operation objTest = new CRUD_Operation();
+        objTest.read_data();
+        
+        objTest.update_data("2", "22", "sad", "sad@gmail");
+        objTest.delete_data("1");
+    }
+	
+	
+	
+	public void read_data() {
+        DB_Connection obj_DB_Connection = new DB_Connection();
+        Connection connection = obj_DB_Connection.get_connection();
+        PreparedStatement ps = null;
+        ResultSet rs=null;
+        try {
+            String query = "select * from student";
+            ps = connection.prepareStatement(query);
+            rs=ps.executeQuery();
+            while(rs.next()){
+            	System.out.println("id "+rs.getInt(1));
+            	System.out.println("name "+rs.getString(2));
+            	System.out.println("marks "+rs.getInt(3));
+            	System.out.println("----------------");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+	
+	
+	 public void update_data(String id,String new_id,String name,String marks){
+    	DB_Connection obj_DB_Connection=new DB_Connection();
+    	Connection connection=obj_DB_Connection.get_connection();
+    	PreparedStatement ps=null;
+    	try {
+    		String query="update student set id=?,name=?,marks=? where id=?";
+    		ps=connection.prepareStatement(query);
+    		ps.setString(1, id);
+    		ps.setString(2, name);
+    		ps.setString(3, marks);
+    		ps.setString(4, id);
+    		//System.out.println(ps);
+    		ps.executeUpdate();
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
+    }
+	
+	
+	
+	 public void delete_data(String id){
+    	DB_Connection obj_DB_Connection=new DB_Connection();
+    	Connection connection=obj_DB_Connection.get_connection();
+    	PreparedStatement ps=null;
+    	try {
+    		String query="delete from student where sl_no=?";
+    		ps=connection.prepareStatement(query);
+    		ps.setString(101, id);
+    		System.out.println(ps);
+    		ps.executeUpdate();
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
+
+    }
+
+}
